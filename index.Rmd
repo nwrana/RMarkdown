@@ -94,11 +94,12 @@ ggplot(error.bars, aes(factor(Hole.Diameter), Mean)) + #, fill = Hole.Diameter))
      theme_bw()
 ```
 
-```{r}
+```{r, include = FALSE}
 
 library(xts)
 library(dygraphs)
 library(dplyr)
+library(knitr)
 
 #Nathan Sequence
 n.dates <- seq(as.Date("1983-10-09"),as.Date("2020-01-01"),by=1)
@@ -183,7 +184,11 @@ ndata.total <- totalData %>%
 
 df.xts <- xts(ndata.total, order.by=ndata.total$Date)
 
-g <- dygraph(df.xts,main="Best of the Best") %>%
+```
+
+```{r}
+
+dygraph(df.xts,main="Best of the Best") %>%
     dyRangeSelector() %>%
     dyAxis("x",label="Date") %>%
     dyAxis("y",label="Score",valueRange = c(-5,5)) %>%
@@ -193,6 +198,4 @@ g <- dygraph(df.xts,main="Best of the Best") %>%
     dyHighlight(highlightCircleSize = 5, 
             highlightSeriesBackgroundAlpha = 0.65,        
             hideOnMouseOut = TRUE)
-
-g
 ```
