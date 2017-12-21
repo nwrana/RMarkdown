@@ -1,0 +1,95 @@
+---
+title: "Test.Run"
+author: Nathan Wrana
+date: December 21, 2017
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+# Periodogram
+
+```{r, echo = FALSE, include=FALSE, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+data <- read.csv('H:/Production/Extrusion/w15psnnw/Documents/Documents/2. Production/3. Lamination/Air Sparger Design/Pipe.Design.Table.csv', header = TRUE, stringsAsFactors = FALSE)
+
+data2 <- data %>%
+     mutate(Hole.Diameter = factor(Hole.Diameter), Pipe.Diameter = factor(Pipe.Diameter))
+
+#levels(data2$Hole.Diameter) <- c('1/16','1/8','1/4','3/8','1/2')
+
+#Filter out pipe diameters
+small <- data2 %>%
+     filter(Pipe.Diameter == '1/2')
+
+medium <- data2 %>%
+     filter(Pipe.Diameter == '3/4')
+
+large <- data2 %>%
+     filter(Pipe.Diameter == '1')
+```
+
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+
+#-----------------------------------------------------------
+#PLOT_2: Orifice velocity vs hole diameter
+#Total exit surface area constant at ~ 0.9 - 1 in^2
+
+hole.size <- data2[c(9,14,15,16),] %>%
+     arrange(desc(Number.Holes)) %>%
+     droplevels(.)
+
+#plot(hole.size$Mean.Flowrate, xlab = '', ylab = 'Avg Exit Velocity, ft/min', main = 'Orifice velocity vs hole diameter')
+
+#ERROR BARS
+#convert from wide format to long format using the 'rehsape' package
+hole.size.test <- hole.size %>%
+     select(Hole.Diameter, Avg.Flowrate.1, Avg.Flowrate.2, Avg.Flowrate.3)
+size.long <- gather(data = hole.size.test, key = Test.run, value = Measurement, Avg.Flowrate.1:Avg.Flowrate.3, factor_key = TRUE)
+error.bars <- size.long %>%
+     group_by(Hole.Diameter) %>%
+     summarise(Mean = mean(Measurement), SD = sd(Measurement)) %>%
+     as.data.frame(.)
+
+max <- mean(1468,1426,1385)
+
+hole.size$Hole.Diameter <- factor(hole.size$Hole.Diameter, levels = c('1/4','3/8','1/2','5/8'))
+
+ggplot(error.bars, aes(factor(Hole.Diameter), Mean)) + #, fill = Hole.Diameter)) +
+     geom_bar(stat = 'identity', position = 'dodge') +
+     scale_fill_brewer(palette = 'Greys') +
+     #ggtitle('Orifice Velocity vs hole diameter \nConstant total surface area  ~ 1 in2')+
+     labs(x = 'Hole Diameter, in', 
+          y = 'Avg Exit Velocity, ft/min', 
+          title = 'Average Orifice Velocity vs Hole Diameter', 
+          subtitle = 'Constant total surface area  ~ 1 in^2') +
+     geom_errorbar(aes(ymin = Mean - SD, ymax = Mean + SD), width = 0.2) +
+     #geom_hline(yintercept = max, col = 'red') +
+     #annotate("text", '3/4', max, vjust = 1, label = "Max Velocity", col='red')+
+     theme_bw()
+```
