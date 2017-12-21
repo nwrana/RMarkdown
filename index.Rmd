@@ -29,9 +29,10 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-# Periodogram
+## Sample Data 
+Would like to see how to display a ggplot graph
 
-```{r, echo = FALSE, include=FALSE, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+```{r lamination_data, echo = FALSE, include=FALSE}
 library(dplyr)
 library(ggplot2)
 library(tidyr)
@@ -54,7 +55,7 @@ large <- data2 %>%
      filter(Pipe.Diameter == '1')
 ```
 
-```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+```{r ggplot}
 
 #-----------------------------------------------------------
 #PLOT_2: Orifice velocity vs hole diameter
@@ -94,7 +95,11 @@ ggplot(error.bars, aes(factor(Hole.Diameter), Mean)) + #, fill = Hole.Diameter))
      theme_bw()
 ```
 
-```{r, include = FALSE}
+## Periodogram
+Plot the maps health of myself and Amy  
+First shot at embedding an interactive graph
+
+```{r periodogram, include = FALSE}
 
 library(xts)
 library(dygraphs)
@@ -186,7 +191,7 @@ df.xts <- xts(ndata.total, order.by=ndata.total$Date)
 
 ```
 
-```{r}
+```{r dygraph, fig.height=6, fig.width=9}
 
 dygraph(df.xts,main="Best of the Best") %>%
     dyRangeSelector() %>%
@@ -199,6 +204,7 @@ dygraph(df.xts,main="Best of the Best") %>%
             highlightSeriesBackgroundAlpha = 0.65,        
             hideOnMouseOut = TRUE)
 ```
+
 
 ## Jupyter Notebook Links to Main File
 
