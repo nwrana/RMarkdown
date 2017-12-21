@@ -31,7 +31,7 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 
 # Periodogram
 
-```{r, echo = FALSE, include=FALSE}
+```{r, echo = FALSE, include=FALSE, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 library(dplyr)
 library(ggplot2)
 library(tidyr)
@@ -54,7 +54,7 @@ large <- data2 %>%
      filter(Pipe.Diameter == '1')
 ```
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 
 #-----------------------------------------------------------
 #PLOT_2: Orifice velocity vs hole diameter
