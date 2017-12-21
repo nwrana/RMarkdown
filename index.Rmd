@@ -199,3 +199,8 @@ dygraph(df.xts,main="Best of the Best") %>%
             highlightSeriesBackgroundAlpha = 0.65,        
             hideOnMouseOut = TRUE)
 ```
+## Adding Jupyter Notebook Links to Main File
+
+[this is a link to a Jupyter notebook](https://nbviewer.jupyter.org/github/nwrana/RMarkdown/blob/master/Maximum.Likelihood.Estimation.ipynb)
+
+
